@@ -195,6 +195,7 @@ CONSTRAINT  PKCR_dept PRIMARY KEY (CR_dept_id)
 );
 
 
+
 CREATE UNIQUE INDEX AK1CR_dept ON CR_dept
 (code  ASC);
 
@@ -453,7 +454,7 @@ CREATE TABLE CR_menu
 	attribute4            VARCHAR2(512)  NULL ,
 	attribute5            VARCHAR2(512)  NULL ,
 	CR_privilege_id       INTEGER  NOT NULL ,
-	CR_module_id          INTEGER  NOT NULL ,
+	CR_module_id          INTEGER  NULL ,
 CONSTRAINT  PKCR_menu PRIMARY KEY (CR_menu_id)
 );
 
@@ -787,7 +788,7 @@ CREATE TABLE CR_right
 	modify_user_id        INTEGER  NULL ,
 	table_name            VARCHAR2(512)  NULL ,
 	column_name           VARCHAR2(512)  NULL ,
-	row_id                INTEGER  NOT NULL ,
+	row_id                INTEGER  NULL ,
 	code                  VARCHAR2(512)  NULL ,
 	date_from             DATE  NULL ,
 	date_to               DATE  NULL ,
