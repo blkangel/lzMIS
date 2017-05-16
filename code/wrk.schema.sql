@@ -3,10 +3,6 @@ set define off
 
 
 
-DROP TABLE CR_gloss CASCADE CONSTRAINTS PURGE;
-
-
-
 DROP TABLE CR_menu CASCADE CONSTRAINTS PURGE;
 
 
@@ -15,71 +11,15 @@ DROP TABLE CR_module CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE MED_sheet CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_right CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_privilege CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_user_role CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_role CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_user_spec CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_spec CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_device_link CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_device CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_room CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_dept CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_place CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_extdata CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_extsystem CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_org CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_person_phone CASCADE CONSTRAINTS PURGE;
+DROP TABLE CR_gloss CASCADE CONSTRAINTS PURGE;
 
 
 
 DROP TABLE CR_person_address CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_person_phone CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -88,14 +28,6 @@ DROP TABLE CR_subuser CASCADE CONSTRAINTS PURGE;
 
 
 DROP TABLE CR_user_setting CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_user CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_position CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -119,19 +51,19 @@ DROP TABLE MED_diag CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE MED_rec CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE MED_type CASCADE CONSTRAINTS PURGE;
-
-
-
 DROP TABLE MED_icd10 CASCADE CONSTRAINTS PURGE;
 
 
 
 DROP TABLE MED_title CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE MED_sheet CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE MED_rec CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -147,6 +79,66 @@ DROP TABLE CR_language CASCADE CONSTRAINTS PURGE;
 
 
 
+DROP TABLE MED_type CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_extdata CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_extsystem CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_cache_privilege CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_user_spec CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_spec CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_user_role CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_device_link CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_device CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_room CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_dept CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_place CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_org CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_right CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_role CASCADE CONSTRAINTS PURGE;
+
+
+
 DROP TABLE CR_list_value CASCADE CONSTRAINTS PURGE;
 
 
@@ -155,7 +147,94 @@ DROP TABLE CR_list CASCADE CONSTRAINTS PURGE;
 
 
 
+DROP TABLE CR_user CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_position CASCADE CONSTRAINTS PURGE;
+
+
+
 DROP TABLE CR_person CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_privilege CASCADE CONSTRAINTS PURGE;
+
+
+
+CREATE TABLE CR_cache_privilege
+(
+	table_name            VARCHAR2(512)  NULL ,
+	column_name           VARCHAR2(512)  NULL ,
+	row_id                INTEGER  NULL ,
+	code                  VARCHAR2(512)  NULL ,
+	date_from             DATE  NULL ,
+	date_to               DATE  NULL ,
+	months_from           INTEGER  NULL ,
+	months_to             INTEGER  NULL ,
+	days_from             INTEGER  NULL ,
+	days_to               INTEGER  NULL ,
+	CR_user_id            INTEGER  NOT NULL ,
+	CR_privilege_id       INTEGER  NOT NULL ,
+	user_login            VARCHAR2(512)  NULL ,
+	CR_role_id            INTEGER  NULL 
+);
+
+
+
+CREATE INDEX IE1CR_cache_privilege ON CR_cache_privilege
+(table_name  ASC);
+
+
+
+CREATE INDEX IE2CR_cache_privilege ON CR_cache_privilege
+(column_name  ASC);
+
+
+
+CREATE INDEX IE3CR_cache_privilege ON CR_cache_privilege
+(row_id  ASC);
+
+
+
+CREATE INDEX IE4CR_cache_privilege ON CR_cache_privilege
+(code  ASC);
+
+
+
+CREATE INDEX IE5CR_cache_privilege ON CR_cache_privilege
+(date_from  ASC,date_to  ASC);
+
+
+
+CREATE INDEX IE6CR_cache_privilege ON CR_cache_privilege
+(months_from  ASC,months_to  ASC);
+
+
+
+CREATE INDEX IE7CR_cache_privilege ON CR_cache_privilege
+(days_from  ASC,days_to  ASC);
+
+
+
+CREATE INDEX IE8CR_cache_privilege ON CR_cache_privilege
+(user_login  ASC);
+
+
+
+CREATE INDEX IF1CR_cache_privilege ON CR_cache_privilege
+(CR_user_id  ASC);
+
+
+
+CREATE INDEX IF2CR_cache_privilege ON CR_cache_privilege
+(CR_privilege_id  ASC);
+
+
+
+CREATE INDEX IF3CR_cache_privilege ON CR_cache_privilege
+(CR_role_id  ASC);
 
 
 
@@ -455,6 +534,7 @@ CREATE TABLE CR_menu
 	attribute5            VARCHAR2(512)  NULL ,
 	CR_privilege_id       INTEGER  NOT NULL ,
 	CR_module_id          INTEGER  NULL ,
+	is_current_list_entry  VARCHAR2(512)  NULL ,
 CONSTRAINT  PKCR_menu PRIMARY KEY (CR_menu_id)
 );
 
@@ -798,45 +878,10 @@ CREATE TABLE CR_right
 	days_to               INTEGER  NULL ,
 	CR_privilege_id       INTEGER  NOT NULL ,
 	CR_user_id            INTEGER  NULL ,
-	CR_role_id            INTEGER  NULL ,
 	access_type_id        INTEGER  NULL ,
+	CR_role_id            INTEGER  NULL ,
 CONSTRAINT  PKCR_right PRIMARY KEY (CR_right_id)
 );
-
-
-
-CREATE INDEX IE1CR_right ON CR_right
-(table_name  ASC);
-
-
-
-CREATE INDEX IE2CR_right ON CR_right
-(column_name  ASC);
-
-
-
-CREATE INDEX IE3CR_right ON CR_right
-(row_id  ASC);
-
-
-
-CREATE INDEX IE4CR_right ON CR_right
-(code  ASC);
-
-
-
-CREATE INDEX IE5CR_right ON CR_right
-(date_from  ASC,date_to  ASC);
-
-
-
-CREATE INDEX IE6CR_right ON CR_right
-(months_from  ASC,months_to  ASC);
-
-
-
-CREATE INDEX IE7CR_right ON CR_right
-(days_from  ASC,days_to  ASC);
 
 
 
@@ -850,13 +895,13 @@ CREATE INDEX IF2CR_right ON CR_right
 
 
 
-CREATE INDEX IF3CR_right ON CR_right
-(CR_role_id  ASC);
-
-
-
 CREATE INDEX IF4CR_right ON CR_right
 (access_type_id  ASC);
+
+
+
+CREATE INDEX IF5CR_right ON CR_right
+(CR_role_id  ASC);
 
 
 
@@ -1368,6 +1413,21 @@ CONSTRAINT  PKMED_type PRIMARY KEY (MED_type_id)
 
 
 
+ALTER TABLE CR_cache_privilege
+	ADD (CONSTRAINT  CR_user_of_CR_cache_privilege FOREIGN KEY (CR_user_id) REFERENCES CR_user(CR_user_id));
+
+
+
+ALTER TABLE CR_cache_privilege
+	ADD (CONSTRAINT  CR_privilege_of_CR_cache_privi FOREIGN KEY (CR_privilege_id) REFERENCES CR_privilege(CR_privilege_id));
+
+
+
+ALTER TABLE CR_cache_privilege
+	ADD (CONSTRAINT  CR_role_of_CR_cache_privilege FOREIGN KEY (CR_role_id) REFERENCES CR_role(CR_role_id));
+
+
+
 ALTER TABLE CR_dept
 	ADD (CONSTRAINT  CR_org_of_CR_dept FOREIGN KEY (CR_org_id) REFERENCES CR_org(CR_org_id));
 
@@ -1504,12 +1564,12 @@ ALTER TABLE CR_right
 
 
 ALTER TABLE CR_right
-	ADD (CONSTRAINT  CR_role_of_CR_right FOREIGN KEY (CR_role_id) REFERENCES CR_role(CR_role_id));
+	ADD (CONSTRAINT  access_type_of_KRN_right FOREIGN KEY (access_type_id) REFERENCES CR_list_value(CR_list_value_id));
 
 
 
 ALTER TABLE CR_right
-	ADD (CONSTRAINT  access_type_of_KRN_right FOREIGN KEY (access_type_id) REFERENCES CR_list_value(CR_list_value_id));
+	ADD (CONSTRAINT  CR_role_of_CR_right FOREIGN KEY (CR_role_id) REFERENCES CR_role(CR_role_id));
 
 
 
