@@ -83,15 +83,15 @@ DROP TABLE MED_type CASCADE CONSTRAINTS PURGE;
 
 
 
+DROP TABLE CR_cache_privilege CASCADE CONSTRAINTS PURGE;
+
+
+
 DROP TABLE CR_extdata CASCADE CONSTRAINTS PURGE;
 
 
 
 DROP TABLE CR_extsystem CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_cache_privilege CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -178,7 +178,7 @@ CREATE TABLE CR_cache_privilege
 	CR_user_id            INTEGER  NOT NULL ,
 	CR_privilege_id       INTEGER  NOT NULL ,
 	user_login            VARCHAR2(512)  NULL ,
-	CR_role_id            INTEGER  NULL 
+	CR_role_id            INTEGER  NULL
 );
 
 
@@ -653,51 +653,51 @@ CONSTRAINT  PKCR_person PRIMARY KEY (CR_person_id)
 
 
 
-COMMENT ON COLUMN CR_person.lastname IS 'Фамилия';
+COMMENT ON COLUMN CR_person.lastname IS 'Р¤Р°РјРёР»РёСЏ';
 
 
 
-COMMENT ON COLUMN CR_person.firstname IS 'Имя';
+COMMENT ON COLUMN CR_person.firstname IS 'РРјСЏ';
 
 
 
-COMMENT ON COLUMN CR_person.patronymic IS 'Отчество';
+COMMENT ON COLUMN CR_person.patronymic IS 'РћС‚С‡РµСЃС‚РІРѕ';
 
 
 
-COMMENT ON COLUMN CR_person.fullname IS 'Полное имя';
+COMMENT ON COLUMN CR_person.fullname IS 'РџРѕР»РЅРѕРµ РёРјСЏ';
 
 
 
-COMMENT ON COLUMN CR_person.shortname IS 'ФИО';
+COMMENT ON COLUMN CR_person.shortname IS 'Р¤РРћ';
 
 
 
-COMMENT ON COLUMN CR_person.sex IS 'Пол';
+COMMENT ON COLUMN CR_person.sex IS 'РџРѕР»';
 
 
 
-COMMENT ON COLUMN CR_person.dob IS 'Дата рождения';
+COMMENT ON COLUMN CR_person.dob IS 'Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ';
 
 
 
-COMMENT ON COLUMN CR_person.lastname_intl IS 'Фамилия альт';
+COMMENT ON COLUMN CR_person.lastname_intl IS 'Р¤Р°РјРёР»РёСЏ Р°Р»СЊС‚';
 
 
 
-COMMENT ON COLUMN CR_person.firstname_intl IS 'Имя альт';
+COMMENT ON COLUMN CR_person.firstname_intl IS 'РРјСЏ Р°Р»СЊС‚';
 
 
 
-COMMENT ON COLUMN CR_person.patronymic_intl IS 'Отчество альт';
+COMMENT ON COLUMN CR_person.patronymic_intl IS 'РћС‚С‡РµСЃС‚РІРѕ Р°Р»СЊС‚';
 
 
 
-COMMENT ON COLUMN CR_person.shortname_intl IS 'ФИО алт';
+COMMENT ON COLUMN CR_person.shortname_intl IS 'Р¤РРћ Р°Р»С‚';
 
 
 
-COMMENT ON COLUMN CR_person.fullname_intl IS 'Полное имя альт';
+COMMENT ON COLUMN CR_person.fullname_intl IS 'РџРѕР»РЅРѕРµ РёРјСЏ Р°Р»СЊС‚';
 
 
 
@@ -1413,6 +1413,13 @@ CONSTRAINT  PKMED_type PRIMARY KEY (MED_type_id)
 
 
 
+CREATE OR REPLACE  VIEW V_user
+	 AS  SELECT cu.CR_user_id,cu.CR_person_id,cu.CR_position_id,cu.login,cu.password,cu.commentary,cu.is_archived,cp.lastname,cp.firstname,cp.patronymic
+		FROM CR_person cp,CR_user cu
+		WHERE cp.cr_person_id=cp.cr_person_id;
+
+
+
 ALTER TABLE CR_cache_privilege
 	ADD (CONSTRAINT  CR_user_of_CR_cache_privilege FOREIGN KEY (CR_user_id) REFERENCES CR_user(CR_user_id));
 
@@ -1757,7 +1764,7 @@ declare
 
 	cursor c1 is
 		select table_name
-		from user_tab_columns 
+		from user_tab_columns
 		where column_name=table_name||'_ID'
 		order by table_name;
 begin
@@ -1798,7 +1805,7 @@ begin
 		triggername:='tBI_'||r1.table_name;
 		sqlcommand:='
 create or replace trigger '||triggername||'
-before insert on '||r1.table_name||' for each row 
+before insert on '||r1.table_name||' for each row
 declare
 	v_app_user  varchar2(512);
 	v_user_id   number;
@@ -1835,7 +1842,7 @@ begin
 		triggername:='tBU_'||r1.table_name;
 		sqlcommand:='
 create or replace trigger '||triggername||'
-before update on '||r1.table_name||' for each row 
+before update on '||r1.table_name||' for each row
 declare
 	v_app_user  varchar2(512);
 	v_user_id   number;
@@ -1878,7 +1885,7 @@ show err
 -- 6. Full and short names triggers
 
 create or replace trigger biu_cr_person
-before insert or update on cr_person for each row 
+before insert or update on cr_person for each row
 begin
 	:new.lastname:=upper(:new.lastname);
 	:new.firstname:=initcap(:new.firstname);
