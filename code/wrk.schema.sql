@@ -1416,7 +1416,17 @@ CONSTRAINT  PKMED_type PRIMARY KEY (MED_type_id)
 CREATE OR REPLACE  VIEW V_user
 	 AS  SELECT cu.CR_user_id,cu.CR_person_id,cu.CR_position_id,cu.login,cu.password,cu.commentary,cu.is_archived,cp.lastname,cp.firstname,cp.patronymic
 		FROM CR_person cp,CR_user cu
-		WHERE cp.cr_person_id=cp.cr_person_id;
+		WHERE cp.cr_person_id=cu.cr_person_id;
+
+
+
+ALTER VIEW V_user
+	ADD CONSTRAINT  PKV_user PRIMARY KEY (CR_user_id);
+
+
+
+ALTER VIEW V_user
+	ADD CONSTRAINT  AK2V_user UNIQUE (login);
 
 
 
