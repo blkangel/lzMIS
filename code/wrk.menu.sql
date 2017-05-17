@@ -30,6 +30,7 @@ exec admin.add_cr_menu(null,'SETTING', 'Настройки','Настройки',9000, 'MAIN_MENU'
 	exec admin.add_cr_menu('SETTING','SETTING.GENERAL', 'Основные','Основные',9010, 'MAIN_MENU',null, 'CR');
 		exec admin.add_cr_menu('SETTING.GENERAL','SETTING.MODULE', 'Модули','Модули',9020, 'MAIN_MENU','f?p=&APP_ID.:102:&SESSION.::&DEBUG.::::', 'CR','102');
 		exec admin.add_cr_menu('SETTING.GENERAL','SETTING.PRIVILEGE', 'Привилегии','Привилегии',9030, 'MAIN_MENU','f?p=&APP_ID.:103:&SESSION.::&DEBUG.::::', 'CR','103');
+		exec admin.add_cr_menu('SETTING.GENERAL','SETTING.USERS', 'Сотрудники','Сотрудники',9040, 'MAIN_MENU','f?p=&APP_ID.:110:&SESSION.::&DEBUG.::::', 'CR','110');
 ------------------------
 -----Выход------------
 ------------------------
