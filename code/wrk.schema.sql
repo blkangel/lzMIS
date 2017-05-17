@@ -3,6 +3,10 @@ set define off
 
 
 
+DROP TABLE CR_gloss CASCADE CONSTRAINTS PURGE;
+
+
+
 DROP TABLE CR_menu CASCADE CONSTRAINTS PURGE;
 
 
@@ -11,15 +15,71 @@ DROP TABLE CR_module CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_gloss CASCADE CONSTRAINTS PURGE;
+DROP TABLE CR_user_role CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_person_address CASCADE CONSTRAINTS PURGE;
+DROP TABLE MED_diag CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE MED_icd10 CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_right CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_user_spec CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_spec CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_print CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_device_link CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_device CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_room CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_dept CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_place CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_extdata CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_extsystem CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_org CASCADE CONSTRAINTS PURGE;
 
 
 
 DROP TABLE CR_person_phone CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_person_address CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -31,7 +91,7 @@ DROP TABLE CR_user_setting CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_print CASCADE CONSTRAINTS PURGE;
+DROP VIEW V_patient CASCADE CONSTRAINTS;
 
 
 
@@ -44,14 +104,6 @@ DROP TABLE MED_event CASCADE CONSTRAINTS PURGE;
 
 
 DROP TABLE MED_event_type CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE MED_diag CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE MED_icd10 CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -79,6 +131,14 @@ DROP TABLE CR_language CASCADE CONSTRAINTS PURGE;
 
 
 
+DROP TABLE CR_list_value CASCADE CONSTRAINTS PURGE;
+
+
+
+DROP TABLE CR_list CASCADE CONSTRAINTS PURGE;
+
+
+
 DROP TABLE MED_type CASCADE CONSTRAINTS PURGE;
 
 
@@ -87,63 +147,15 @@ DROP TABLE CR_cache_privilege CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_extdata CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_extsystem CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_user_spec CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_spec CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_user_role CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_device_link CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_device CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_room CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_dept CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_place CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_org CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_right CASCADE CONSTRAINTS PURGE;
-
-
-
 DROP TABLE CR_role CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_list_value CASCADE CONSTRAINTS PURGE;
+DROP TABLE CR_privilege CASCADE CONSTRAINTS PURGE;
 
 
 
-DROP TABLE CR_list CASCADE CONSTRAINTS PURGE;
+DROP VIEW V_user CASCADE CONSTRAINTS;
 
 
 
@@ -156,10 +168,6 @@ DROP TABLE CR_position CASCADE CONSTRAINTS PURGE;
 
 
 DROP TABLE CR_person CASCADE CONSTRAINTS PURGE;
-
-
-
-DROP TABLE CR_privilege CASCADE CONSTRAINTS PURGE;
 
 
 
@@ -178,7 +186,7 @@ CREATE TABLE CR_cache_privilege
 	CR_user_id            INTEGER  NOT NULL ,
 	CR_privilege_id       INTEGER  NOT NULL ,
 	user_login            VARCHAR2(512)  NULL ,
-	CR_role_id            INTEGER  NULL
+	CR_role_id            INTEGER  NULL 
 );
 
 
@@ -1022,7 +1030,7 @@ CONSTRAINT  PKCR_user PRIMARY KEY (CR_user_id)
 
 
 
-CREATE INDEX IF1CR_user ON CR_user
+CREATE UNIQUE INDEX IF1CR_user ON CR_user
 (CR_person_id  ASC);
 
 
@@ -1282,7 +1290,7 @@ CREATE UNIQUE INDEX AK1MED_patient ON MED_patient
 
 
 
-CREATE INDEX IF1MED_patient ON MED_patient
+CREATE UNIQUE INDEX IF1MED_patient ON MED_patient
 (CR_person_id  ASC);
 
 
@@ -1414,9 +1422,14 @@ CONSTRAINT  PKMED_type PRIMARY KEY (MED_type_id)
 
 
 CREATE OR REPLACE  VIEW V_user
-	 AS  SELECT cu.CR_user_id,cu.CR_person_id,cu.CR_position_id,cu.login,cu.password,cu.commentary,cu.is_archived,cp.lastname,cp.firstname,cp.patronymic
-		FROM CR_person cp,CR_user cu
-		WHERE cp.cr_person_id=cu.cr_person_id;
+	 AS  SELECT cu.CR_user_id,cu.CR_person_id,cu.CR_position_id,cu.login,cu.password,cu.commentary,cu.is_archived,cp.lastname,cp.firstname,cp.patronymic,cp.fullname,cp.shortname
+		FROM CR_user cu,CR_person cp
+		WHERE cu.cr_person_id=cp.cr_person_id
+		WITH CHECK OPTION;
+
+
+
+COMMENT ON TABLE V_user IS 'Сотрудники';
 
 
 
@@ -1427,6 +1440,23 @@ ALTER VIEW V_user
 
 ALTER VIEW V_user
 	ADD CONSTRAINT  AK2V_user UNIQUE (login);
+
+
+
+CREATE OR REPLACE  VIEW V_patient
+	 AS  SELECT mp.MED_patient_id,mp.code,cp.lastname,cp.firstname,cp.patronymic,cp.fullname,cp.shortname,cp.sex,cp.dob,cp.lastname_intl,cp.firstname_intl,cp.patronymic_intl,cp.shortname_intl,cp.fullname_intl,mp.CR_language_id,mp.CR_country_id,mp.code_snils,mp.code_foms,mp.email,mp.is_archived,mp.doc_type_id,mp.CR_person_id,mp.doc_serial,mp.doc_num,mp.doc_date,mp.doc_org,mp.commentary
+		FROM MED_patient mp,CR_person cp
+		WHERE mp.cr_person_id=cp.cr_person_id;
+
+
+
+ALTER VIEW V_patient
+	ADD CONSTRAINT  PKV_patient PRIMARY KEY (MED_patient_id);
+
+
+
+ALTER VIEW V_patient
+	ADD CONSTRAINT  AK1V_patient UNIQUE (code);
 
 
 
@@ -1774,7 +1804,7 @@ declare
 
 	cursor c1 is
 		select table_name
-		from user_tab_columns
+		from user_tab_columns 
 		where column_name=table_name||'_ID'
 		order by table_name;
 begin
@@ -1815,7 +1845,7 @@ begin
 		triggername:='tBI_'||r1.table_name;
 		sqlcommand:='
 create or replace trigger '||triggername||'
-before insert on '||r1.table_name||' for each row
+before insert on '||r1.table_name||' for each row 
 declare
 	v_app_user  varchar2(512);
 	v_user_id   number;
@@ -1852,7 +1882,7 @@ begin
 		triggername:='tBU_'||r1.table_name;
 		sqlcommand:='
 create or replace trigger '||triggername||'
-before update on '||r1.table_name||' for each row
+before update on '||r1.table_name||' for each row 
 declare
 	v_app_user  varchar2(512);
 	v_user_id   number;
@@ -1895,7 +1925,7 @@ show err
 -- 6. Full and short names triggers
 
 create or replace trigger biu_cr_person
-before insert or update on cr_person for each row
+before insert or update on cr_person for each row 
 begin
 	:new.lastname:=upper(:new.lastname);
 	:new.firstname:=initcap(:new.firstname);
